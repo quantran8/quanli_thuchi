@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
                         al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                al.setCancelable(true);
+                                Intent intent = new Intent(MainActivity.this,ScreenActivity.class);
+                                startActivity(intent);
                             }
                         });
                         al.show();

@@ -61,7 +61,7 @@ public class RegistedActivity extends AppCompatActivity {
                     }
                     else {
                         al.setTitle("Thông báo");
-                        al.setMessage("Mật khẩu không khớpq");
+                        al.setMessage("Mật khẩu không khớp");
                         al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
