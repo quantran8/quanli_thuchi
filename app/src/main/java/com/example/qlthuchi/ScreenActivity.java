@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -40,10 +41,10 @@ import java.util.Locale;
 
 public class ScreenActivity extends Activity {
     Database  db= new Database(this,"money.sqlite",null,1);
-    private void updateCalendar()
+    private void updateCalendar(String userPhoneNumber)
     {
         SQLiteDatabase liteDB = db.getReadableDatabase();
-        String select = "SELECT * FROM money ORDER BY Ngay ASC";
+        String select = "SELECT * FROM money WHERE User = '"+userPhoneNumber+"' ORDER BY Ngay ASC";
         Cursor c = liteDB.rawQuery(select,null);
         CalendarView calendarView = (CalendarView) findViewById(R.id.appCalendar);
         List<EventDay> events = new ArrayList<>();
@@ -118,9 +119,9 @@ public class ScreenActivity extends Activity {
         SharedPreferences sp = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         String userPhoneNumber = sp.getString("phone","");
 
-        String sql ="CREATE TABLE IF NOT EXISTS money (Id INTEGER PRIMARY KEY AUTOINCREMENT, NoiDung VARCHAR(30), Tien INTEGER NOT NULL , Ngay INTEGER)";
+        String sql ="CREATE TABLE IF NOT EXISTS money (Id INTEGER PRIMARY KEY AUTOINCREMENT, NoiDung VARCHAR(30), Tien INTEGER NOT NULL , Ngay INTEGER, User VARCHAR(11))";
         db.QueryData(sql);
-        updateCalendar();
+        updateCalendar(userPhoneNumber);
         ListView listView = findViewById(R.id.listView);
         FloatingActionButton fab = findViewById(R.id.fab);
         FloatingActionButton logout = findViewById(R.id.logout);
@@ -139,7 +140,6 @@ public class ScreenActivity extends Activity {
             public void onClick(View view) {
                 AlertDialog.Builder alert1 = new AlertDialog.Builder(ScreenActivity.this);
                 final EditText editTextND = new EditText(ScreenActivity.this);
-
                 final String[] txtNoiDung = new String[1];
                 alert1.setTitle("Thêm bản ghi");
                 alert1.setMessage("Nhập nội dung:");
@@ -164,18 +164,42 @@ public class ScreenActivity extends Activity {
                                 else {
                                     try {
                                         txtMoney[0] = editTextMoney.getText().toString();
-                                        int check = Integer.parseInt(txtMoney[0]);
-                                        if(check<=0) {
+                                        final int[] check = new int[1];
+                                        check[0] = Integer.parseInt(txtMoney[0]);
+                                        if(check[0]<=0) {
                                             Toast.makeText(ScreenActivity.this, "Nhập số tiền lớn hơn 0", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                         if(switchCompat.isChecked())
-                                            check=-check;
-                                        String command = "INSERT INTO money VALUES(null,'" + txtNoiDung[0] + "','" + check + "',strftime('%s','now'))";
-                                        db.QueryData(command);
-                                        updateCalendar();
-                                        Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
-                                        listView.setAdapter(null);
+                                            check[0]=-check[0];
+                                        AlertDialog.Builder alert3 = new AlertDialog.Builder(ScreenActivity.this);
+                                        alert3.setTitle("Chọn ngày nhập");
+                                        View datePickerView = View.inflate(ScreenActivity.this, R.layout.datepicker,null);
+                                        alert3.setView(datePickerView);
+                                        alert3.setPositiveButton("Nhập", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                DatePicker datePicker = datePickerView.findViewById(R.id.picker_datePicker);
+                                                int day = datePicker.getDayOfMonth();
+                                                int month = datePicker.getMonth();
+                                                int year = datePicker.getYear();
+                                                Calendar unixPicker = Calendar.getInstance();
+                                                unixPicker.set(year, month,day,12,00);
+                                                long timeStampPicker = unixPicker.getTimeInMillis()/1000L;
+                                                String command = "INSERT INTO money VALUES(null,'" + txtNoiDung[0] + "','" + check[0] + "','"+timeStampPicker+"','"+userPhoneNumber+"')";
+                                                db.QueryData(command);
+                                                updateCalendar(userPhoneNumber);
+                                                Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
+                                                listView.setAdapter(null);
+                                            }
+                                        });
+                                        alert3.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                alert3.setCancelable(true);
+                                            }
+                                        });
+                                        alert3.show();
                                     }
                                     catch(Exception ex)
                                     {
@@ -210,7 +234,7 @@ public class ScreenActivity extends Activity {
                 long unixLow = clickedDayCalendar.getTimeInMillis() / 1000L;
                 long unixHigh = unixLow + 86400L;
                 ArrayList<Item> list = new ArrayList<>();
-                String selectCommand = "SELECT * FROM money WHERE Ngay>='" + unixLow + "' AND Ngay<'" + unixHigh + "'";
+                String selectCommand = "SELECT * FROM money WHERE Ngay>='" + unixLow + "' AND Ngay<'" + unixHigh + "' AND User = '" + userPhoneNumber + "'";
                 SQLiteDatabase liteDB = db.getReadableDatabase();
                 Cursor c = liteDB.rawQuery(selectCommand, null);
                 if (c.moveToFirst()) {
@@ -268,10 +292,9 @@ public class ScreenActivity extends Activity {
                                             check=-check;
                                         String command = "UPDATE money SET Noidung = '" + txtNoiDung[0] + "', Tien = '" + check + "' WHERE Id = '" + id + "'";
                                         db.QueryData(command);
-                                        updateCalendar();
                                         Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
                                         listView.setAdapter(null);
-                                        updateCalendar();
+                                        updateCalendar(userPhoneNumber);
                                     }
                                     catch(Exception ex)
                                     {
@@ -310,7 +333,7 @@ public class ScreenActivity extends Activity {
                         String command = "DELETE FROM money WHERE Id = '" + id + "'";
                         db.QueryData(command);
                         listView.setAdapter(null);
-                        updateCalendar();
+                        updateCalendar(userPhoneNumber);
                     }
                 });
                 alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
