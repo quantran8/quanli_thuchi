@@ -26,7 +26,6 @@ MainActivity extends AppCompatActivity {
         sp = getSharedPreferences("user", Context.MODE_PRIVATE);
         SharedPreferences.Editor saveUserInfo = sp.edit();
         db.QueryData(sql);
-
         Button login = (Button) findViewById(R.id.login);
         Button registed = (Button) findViewById(R.id.registed);
         EditText phone = (EditText) findViewById(R.id.phone);
