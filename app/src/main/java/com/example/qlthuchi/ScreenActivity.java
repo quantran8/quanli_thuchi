@@ -1,11 +1,15 @@
 package com.example.qlthuchi;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.ContentInfo;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -32,7 +36,6 @@ import java.util.Locale;
 
 public class ScreenActivity extends Activity {
     Database  db= new Database(this,"money.sqlite",null,1);
-
     private void updateCalendar()
     {
         SQLiteDatabase liteDB = db.getReadableDatabase();
@@ -106,15 +109,31 @@ public class ScreenActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_screen);
+        //----------------------- get user data (phone number ) from app local data----------------------------------------------------
+        SharedPreferences sp = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+        String userPhoneNumber = sp.getString("phone","");
+
         String sql ="CREATE TABLE IF NOT EXISTS money (Id INTEGER PRIMARY KEY AUTOINCREMENT, NoiDung VARCHAR(30), Tien INTEGER NOT NULL , Ngay INTEGER)";
         db.QueryData(sql);
         updateCalendar();
         FloatingActionButton fab = findViewById(R.id.fab);
+        FloatingActionButton logout = findViewById(R.id.logout);
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = sp.edit();
+                editor.remove("phone");
+                editor.commit();
+                Intent intent = new Intent(ScreenActivity.this,MainActivity.class);
+                startActivity(intent);
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder alert1 = new AlertDialog.Builder(ScreenActivity.this);
                 final EditText editTextND = new EditText(ScreenActivity.this);
+
                 final String[] txtNoiDung = new String[1];
                 alert1.setTitle("Thêm bản ghi");
                 alert1.setMessage("Nhập nội dung:");

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,9 +32,10 @@ public class RegistedActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder al = new AlertDialog.Builder(RegistedActivity.this);
+                al.setTitle("Thông báo");
                 if(name.getText().toString().equals("") || phone.getText().toString().equals("") || pass.getText().toString().equals("")||confirm_pass.getText().toString().equals("")){
 
-                    al.setTitle("Thông báo");
+
                     al.setMessage("Bạn chưa nhập đầy đủ thông tin");
                     al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
@@ -46,11 +48,10 @@ public class RegistedActivity extends AppCompatActivity {
 
                 }
                 else {
-                    if(pass.getText().toString().equals(confirm_pass.getText().toString())){
-                       String sql = "INSERT INTO users VALUES(null,' "+name.getText().toString()+"' , '"+phone.getText().toString()+"', '"+pass.getText().toString()+"' )";
-                       db.QueryData(sql);
-                        al.setTitle("Thông báo");
-                        al.setMessage("Đăng kí thành công");
+                    String sql2 ="SELECT * FROM users WHERE dt ='"+phone.getText().toString()+"'";
+                    Cursor data = db.GetData(sql2);
+                    if(data.moveToFirst()){
+                        al.setMessage("Số điện thoại đã được đăng kí");
                         al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -59,17 +60,31 @@ public class RegistedActivity extends AppCompatActivity {
                         });
                         al.show();
                     }
-                    else {
-                        al.setTitle("Thông báo");
-                        al.setMessage("Mật khẩu không khớp");
-                        al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                al.setCancelable(true);
-                            }
-                        });
-                        al.show();
+                    else{
+                        if(pass.getText().toString().equals(confirm_pass.getText().toString())){
+                            String sql = "INSERT INTO users VALUES(null,' "+name.getText().toString()+"' , '"+phone.getText().toString()+"', '"+pass.getText().toString()+"' )";
+                            db.QueryData(sql);
+                            al.setMessage("Đăng kí thành công");
+                            al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    al.setCancelable(true);
+                                }
+                            });
+                            al.show();
+                        }
+                        else {
+                            al.setMessage("Mật khẩu không khớp");
+                            al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    al.setCancelable(true);
+                                }
+                            });
+                            al.show();
+                        }
                     }
+
                 }
             }
         });

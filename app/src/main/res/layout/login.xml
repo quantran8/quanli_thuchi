@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -13,7 +15,7 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
+            android:layout_marginStart="60dp"
             android:text="Số điện thoại"
             app:layout_constraintBottom_toTopOf="@+id/phone"
             app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +25,7 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="100dp"
+            android:layout_marginStart="60dp"
             android:layout_marginTop="40dp"
             android:text="Mật khẩu"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,8 +47,8 @@
             android:id="@+id/login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
-            android:layout_marginTop="68dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="72dp"
             android:text="Đăng nhập"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pass" />
@@ -56,10 +58,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="68dp"
+            android:layout_marginTop="72dp"
             android:text="Đăng kí"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="0.157"
             app:layout_constraintStart_toEndOf="@+id/login"
             app:layout_constraintTop_toBottomOf="@+id/pass" />
 
@@ -75,4 +77,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/phone" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </LinearLayout>
