@@ -8,14 +8,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
@@ -55,13 +59,14 @@ public class ScreenActivity extends Activity {
                 if(unixDate != oldDate) {
                     if(oldDate!=-1L)
                     {
-                        calendar.setTimeInMillis(oldDate*1000L);
+                        Calendar calendarOld = (Calendar) calendar.clone();
+                        calendarOld.setTimeInMillis(oldDate*1000L);
                         if(day_thuchi>0)
-                            events.add(new EventDay(calendar,R.drawable.ic_baseline_arrow_drop_up_24,Color.parseColor("#00FFFF")));
+                            events.add(new EventDay(calendarOld,R.drawable.ic_baseline_arrow_drop_up_24,Color.parseColor("#00FFFF")));
                         else if(day_thuchi<0)
-                            events.add(new EventDay(calendar,R.drawable.ic_baseline_arrow_drop_down_24,Color.parseColor("#FF0000")));
+                            events.add(new EventDay(calendarOld,R.drawable.ic_baseline_arrow_drop_down_24,Color.parseColor("#FF0000")));
                         else
-                            events.add(new EventDay(calendar,R.drawable.ic_baseline_stop_24,Color.parseColor("#8888CC")));
+                            events.add(new EventDay(calendarOld,R.drawable.ic_baseline_stop_24,Color.parseColor("#8888CC")));
                         day_thuchi=0;
                     }
                     oldDate = unixDate;
@@ -109,6 +114,7 @@ public class ScreenActivity extends Activity {
         String sql ="CREATE TABLE IF NOT EXISTS money (Id INTEGER PRIMARY KEY AUTOINCREMENT, NoiDung VARCHAR(30), Tien INTEGER NOT NULL , Ngay INTEGER)";
         db.QueryData(sql);
         updateCalendar();
+        ListView listView = findViewById(R.id.listView);
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +132,9 @@ public class ScreenActivity extends Activity {
                         AlertDialog.Builder alert2 = new AlertDialog.Builder(ScreenActivity.this);
                         final EditText editTextMoney = new EditText(ScreenActivity.this);
                         final String[] txtMoney = new String[1];
-                        alert2.setTitle("Thêm bản ghi");
+                        View title = View.inflate(ScreenActivity.this,R.layout.customtitle,null);
+                        SwitchCompat switchCompat = title.findViewById(R.id.title_switch);
+                        alert2.setCustomTitle(title);
                         alert2.setMessage("Nhập số lượng tiền:");
                         alert2.setView(editTextMoney);
                         alert2.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
@@ -138,14 +146,17 @@ public class ScreenActivity extends Activity {
                                     try {
                                         txtMoney[0] = editTextMoney.getText().toString();
                                         int check = Integer.parseInt(txtMoney[0]);
-                                        if(check==0) {
-                                            Toast.makeText(ScreenActivity.this, "Không thể để trống số tiền", Toast.LENGTH_SHORT).show();
+                                        if(check<=0) {
+                                            Toast.makeText(ScreenActivity.this, "Nhập số tiền lớn hơn 0", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
-                                        String command = "INSERT INTO money VALUES(null,'" + txtNoiDung[0] + "','" + txtMoney[0] + "',strftime('%s','now'))";
+                                        if(switchCompat.isChecked())
+                                            check=-check;
+                                        String command = "INSERT INTO money VALUES(null,'" + txtNoiDung[0] + "','" + check + "',strftime('%s','now'))";
                                         db.QueryData(command);
                                         updateCalendar();
                                         Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
+                                        listView.setAdapter(null);
                                     }
                                     catch(Exception ex)
                                     {
@@ -185,7 +196,7 @@ public class ScreenActivity extends Activity {
                 Cursor c = liteDB.rawQuery(selectCommand, null);
                 if (c.moveToFirst()) {
                     do {
-                        list.add(new Item(c.getString(1),c.getString(2)));
+                        list.add(new Item(Integer.parseInt(c.getString(0)),c.getString(1),c.getString(2)));
                     }
                     while (c.moveToNext());
                 }
@@ -193,8 +204,104 @@ public class ScreenActivity extends Activity {
                 listCalendar.add(clickedDayCalendar);
                 calendarView.setHighlightedDays(listCalendar);
                 ListAdapter adapter = new ListAdapter(list);
-                ListView listView = findViewById(R.id.listView);
                 listView.setAdapter(adapter);
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                long id = listView.getItemIdAtPosition(i);
+                //Toast.makeText(ScreenActivity.this, String.valueOf(id),Toast.LENGTH_SHORT).show();
+                AlertDialog.Builder alert1 = new AlertDialog.Builder(ScreenActivity.this);
+                final EditText editTextND = new EditText(ScreenActivity.this);
+                final String[] txtNoiDung = new String[1];
+                alert1.setTitle("Sửa bản ghi");
+                alert1.setMessage("Nhập nội dung:");
+                alert1.setView(editTextND);
+                alert1.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        txtNoiDung[0] =editTextND.getText().toString();
+                        AlertDialog.Builder alert2 = new AlertDialog.Builder(ScreenActivity.this);
+                        final EditText editTextMoney = new EditText(ScreenActivity.this);
+                        final String[] txtMoney = new String[1];
+                        View title = View.inflate(ScreenActivity.this,R.layout.customtitle,null);
+                        SwitchCompat switchCompat = title.findViewById(R.id.title_switch);
+                        TextView title_title = title.findViewById(R.id.title_title);
+                        title_title.setText("Sửa bản ghi");
+                        alert2.setCustomTitle(title);
+                        alert2.setMessage("Nhập số lượng tiền:");
+                        alert2.setView(editTextMoney);
+                        alert2.setPositiveButton("Tiếp tục", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                if(editTextMoney.getText().toString().equals(""))
+                                    Toast.makeText(ScreenActivity.this,"Không thể để trống số tiền",Toast.LENGTH_SHORT).show();
+                                else {
+                                    try {
+                                        txtMoney[0] = editTextMoney.getText().toString();
+                                        int check = Integer.parseInt(txtMoney[0]);
+                                        if(check<=0) {
+                                            Toast.makeText(ScreenActivity.this, "Nhập số tiền lớn hơn 0", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if(switchCompat.isChecked())
+                                            check=-check;
+                                        String command = "UPDATE money SET Noidung = '" + txtNoiDung[0] + "', Tien = '" + check + "' WHERE Id = '" + id + "'";
+                                        db.QueryData(command);
+                                        updateCalendar();
+                                        Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
+                                        listView.setAdapter(null);
+                                        updateCalendar();
+                                    }
+                                    catch(Exception ex)
+                                    {
+                                        Toast.makeText(ScreenActivity.this,"Nhập tiền sai",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
+                        alert2.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                alert2.setCancelable(true);
+                            }
+                        });
+                        alert2.show();
+                    }
+                });
+                alert1.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        alert1.setCancelable(true);
+                    }
+                });
+                alert1.show();
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                long id = listView.getItemIdAtPosition(i);
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(ScreenActivity.this);
+                alertDialog.setTitle("Hủy bản ghi này?");
+                alertDialog.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String command = "DELETE FROM money WHERE Id = '" + id + "'";
+                        db.QueryData(command);
+                        listView.setAdapter(null);
+                        updateCalendar();
+                    }
+                });
+                alertDialog.setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        alertDialog.setCancelable(true);
+                    }
+                });
+                alertDialog.show();
+                return true;
             }
         });
     }
@@ -202,11 +309,13 @@ public class ScreenActivity extends Activity {
 
 class Item
 {
+    int id;
     String noidung;
     String money;
 
-    public Item(String noidung, String money)
+    public Item(int id,String noidung, String money)
     {
+        this.id=id;
         this.noidung=noidung;
         this.money=money;
     }
@@ -233,7 +342,7 @@ class ListAdapter extends BaseAdapter
 
     @Override
     public long getItemId(int i) {
-        return 0;
+        return list.get(i).id;
     }
 
     NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMAN);

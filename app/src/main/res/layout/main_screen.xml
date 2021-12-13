@@ -3,109 +3,130 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <androidx.core.widget.NestedScrollView
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:fillViewport="true">
+
         <LinearLayout
-            android:layout_height="match_parent"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
+
             <com.applandeo.materialcalendarview.CalendarView
                 android:id="@+id/appCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:headerColor="#8888cc"
-                app:todayLabelColor="#8888cc"/>
+                app:todayLabelColor="#8888cc" />
+
             <LinearLayout
+                android:id="@+id/layout_linear1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/layout_linear1">
+                android:layout_height="wrap_content">
+
                 <TextView
+                    android:id="@+id/thunhap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Thu nhập"
                     android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:textSize="11sp"
-                    android:id="@+id/thunhap"/>
+                    android:textSize="11sp" />
+
                 <TextView
+                    android:id="@+id/chitieu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Chi tiêu"
-                    android:textSize="11sp"
                     android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:id="@+id/chitieu"/>
+                    android:textSize="11sp" />
+
                 <TextView
+                    android:id="@+id/tong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="Tổng"
-                    android:textSize="11sp"
                     android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:id="@+id/tong"/>
+                    android:textSize="11sp" />
             </LinearLayout>
+
             <LinearLayout
+                android:id="@+id/layout_linear2"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/layout_linear2">
+                android:layout_height="wrap_content">
+
                 <TextView
+                    android:id="@+id/num_thunhap"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="0đ"
                     android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
                     android:textColor="#ff00ffff"
-                    android:id="@+id/num_thunhap"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
                 <TextView
+                    android:id="@+id/num_chitieu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="0đ"
-                    android:textStyle="bold"
-                    android:textSize="15sp"
+                    android:textAlignment="center"
                     android:textColor="#ffff0000"
-                    android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:id="@+id/num_chitieu"/>
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
                 <TextView
+                    android:id="@+id/num_tong"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="0đ"
-                    android:textStyle="bold"
+                    android:textAlignment="center"
                     android:textColor="#ff00ffff"
                     android:textSize="15sp"
-                    android:textAlignment="center"
-                    android:layout_weight="1"
-                    android:id="@+id/num_tong"/>
+                    android:textStyle="bold" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:id="@+id/list_title"
-                    android:text="Danh sách"
-                    android:padding="5dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"/>
-                <com.example.qlthuchi.NonScrollList
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/listView"/>
+                    android:padding="5dp"
+                    android:text="Danh sách"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.example.qlthuchi.NonScrollList
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fab"
-        android:src="@drawable/ic_baseline_add_24"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="20dp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#888888CC"
+        android:src="@drawable/ic_baseline_add_24"
+        app:backgroundTint="#8888cc"
+        app:elevation="1dp"/>
 </RelativeLayout>
