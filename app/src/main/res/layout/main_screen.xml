@@ -111,6 +111,10 @@
                     android:id="@+id/listView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+<!--<<<<<<< HEAD-->
+
+<!--=======-->
+<!--&gt;>>>>>> 33246b70e0992df63ef2aa566315067248415bc7-->
 
             </LinearLayout>
 
@@ -132,12 +136,21 @@
         android:id="@+id/logout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
+
         android:layout_marginBottom="80dp"
         android:backgroundTint="@color/red"
         android:src="@drawable/ic_baseline_exit_to_app_24" />
+<!--=======-->
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="#888888CC"
+        android:src="@drawable/ic_baseline_add_24"
+        app:backgroundTint="#8888cc"
+        app:elevation="1dp"/>
+>>>>>>> 33246b70e0992df63ef2aa566315067248415bc7
 </RelativeLayout>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <TextView
+        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text="Thêm bản ghi"
+        android:id="@+id/title_title"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center_vertical"/>
+    <androidx.appcompat.widget.SwitchCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/title_chi"
+        app:thumbTint="#8888cc"
+        android:id="@+id/title_switch"/>
+    <TextView
+        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:text="Thu"
+        android:gravity="center_vertical"
+        android:layout_toLeftOf="@+id/title_switch"/>
+    <TextView
+        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:text="Chi"
+        android:gravity="center_vertical"
+        android:id="@+id/title_chi"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>
