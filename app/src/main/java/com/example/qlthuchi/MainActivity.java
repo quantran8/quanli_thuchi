@@ -36,20 +36,11 @@ MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     AlertDialog.Builder al = new AlertDialog.Builder(MainActivity.this);
+                    al.setTitle("Thông báo");
                     if(!phone.getText().toString().equals("") && !pass.getText().toString().equals("")){
                         String sql = "SELECT * FROM users WHERE dt= '"+phone.getText().toString()+"' AND matkhau ='"+pass.getText().toString()+"'";
                         Cursor data = db.GetData(sql);
                         if(data.moveToNext()){
-                            al.setTitle("Thông báo");
-                            al.setMessage("Đăng nhập thành công");
-
-                            al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-
-                                }
-                            });
-//                        al.show();
                             Intent intent = new Intent(MainActivity.this,ScreenActivity.class);
                             startActivity(intent);
                             saveUserInfo.putString("phone",phone.getText().toString());
@@ -57,7 +48,7 @@ MainActivity extends AppCompatActivity {
 
                         }
                         else{
-                            al.setTitle("Thông báo");
+
                             al.setMessage("Tài khoản hoặc mật khẩu không chính xác");
                             al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
                                 @Override
@@ -67,6 +58,16 @@ MainActivity extends AppCompatActivity {
                             });
                             al.show();
                         }
+                    }
+                    else {
+                        al.setMessage("Vui lòng nhập dầy đủ thông tin");
+                        al.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                al.setCancelable(true);
+                            }
+                        });
+                        al.show();
                     }
                 }
             });
