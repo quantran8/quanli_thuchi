@@ -44,7 +44,7 @@ public class ScreenActivity extends Activity {
     private void updateCalendar(String userPhoneNumber)
     {
         SQLiteDatabase liteDB = db.getReadableDatabase();
-        String select = "SELECT * FROM money WHERE User = '"+userPhoneNumber+"' ORDER BY Ngay ASC";
+        String select = "SELECT * FROM moneys WHERE User = '"+userPhoneNumber+"' ORDER BY Ngay ASC";
         Cursor c = liteDB.rawQuery(select,null);
         CalendarView calendarView = (CalendarView) findViewById(R.id.appCalendar);
         List<EventDay> events = new ArrayList<>();
@@ -119,7 +119,7 @@ public class ScreenActivity extends Activity {
         SharedPreferences sp = getApplicationContext().getSharedPreferences("user", Context.MODE_PRIVATE);
         String userPhoneNumber = sp.getString("phone","");
 
-        String sql ="CREATE TABLE IF NOT EXISTS money (Id INTEGER PRIMARY KEY AUTOINCREMENT, NoiDung VARCHAR(30), Tien INTEGER NOT NULL , Ngay INTEGER, User VARCHAR(11))";
+        String sql ="CREATE TABLE IF NOT EXISTS moneys (Id INTEGER PRIMARY KEY AUTOINCREMENT, NoiDung VARCHAR(30), Tien INTEGER NOT NULL , Ngay INTEGER, User VARCHAR(11))";
         db.QueryData(sql);
         updateCalendar(userPhoneNumber);
         ListView listView = findViewById(R.id.listView);
@@ -186,7 +186,7 @@ public class ScreenActivity extends Activity {
                                                 Calendar unixPicker = Calendar.getInstance();
                                                 unixPicker.set(year, month,day,12,00);
                                                 long timeStampPicker = unixPicker.getTimeInMillis()/1000L;
-                                                String command = "INSERT INTO money VALUES(null,'" + txtNoiDung[0] + "','" + check[0] + "','"+timeStampPicker+"','"+userPhoneNumber+"')";
+                                                String command = "INSERT INTO moneys VALUES(null,'" + txtNoiDung[0] + "','" + check[0] + "','"+timeStampPicker+"','"+userPhoneNumber+"')";
                                                 db.QueryData(command);
                                                 updateCalendar(userPhoneNumber);
                                                 Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
@@ -234,7 +234,7 @@ public class ScreenActivity extends Activity {
                 long unixLow = clickedDayCalendar.getTimeInMillis() / 1000L;
                 long unixHigh = unixLow + 86400L;
                 ArrayList<Item> list = new ArrayList<>();
-                String selectCommand = "SELECT * FROM money WHERE Ngay>='" + unixLow + "' AND Ngay<'" + unixHigh + "' AND User = '" + userPhoneNumber + "'";
+                String selectCommand = "SELECT * FROM moneys WHERE Ngay>='" + unixLow + "' AND Ngay<'" + unixHigh + "' AND User = '" + userPhoneNumber + "'";
                 SQLiteDatabase liteDB = db.getReadableDatabase();
                 Cursor c = liteDB.rawQuery(selectCommand, null);
                 if (c.moveToFirst()) {
@@ -290,7 +290,7 @@ public class ScreenActivity extends Activity {
                                         }
                                         if(switchCompat.isChecked())
                                             check=-check;
-                                        String command = "UPDATE money SET Noidung = '" + txtNoiDung[0] + "', Tien = '" + check + "' WHERE Id = '" + id + "'";
+                                        String command = "UPDATE moneys SET Noidung = '" + txtNoiDung[0] + "', Tien = '" + check + "' WHERE Id = '" + id + "'";
                                         db.QueryData(command);
                                         Toast.makeText(ScreenActivity.this,"Nhập thành công",Toast.LENGTH_SHORT).show();
                                         listView.setAdapter(null);
@@ -330,7 +330,7 @@ public class ScreenActivity extends Activity {
                 alertDialog.setPositiveButton("Hủy", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String command = "DELETE FROM money WHERE Id = '" + id + "'";
+                        String command = "DELETE FROM moneys WHERE Id = '" + id + "'";
                         db.QueryData(command);
                         listView.setAdapter(null);
                         updateCalendar(userPhoneNumber);
