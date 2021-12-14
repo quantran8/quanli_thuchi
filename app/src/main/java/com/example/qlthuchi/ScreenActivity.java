@@ -104,7 +104,7 @@ public class ScreenActivity extends Activity {
             txt_chitieu.setText(df.format(-num_chitieu));
             TextView txt_tong = findViewById(R.id.num_tong);
             txt_tong.setText(df.format(num_thunhap+num_chitieu));
-            if(num_thunhap<num_chitieu)
+            if(num_thunhap<-num_chitieu)
                 txt_tong.setTextColor(Color.parseColor("#FF0000"));
             else txt_tong.setTextColor(Color.parseColor("#00FFFF"));
         }
